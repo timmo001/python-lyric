@@ -528,8 +528,7 @@ class Thermostat(lyricDevice):
 
         return self.changeableValues.get("thermostatSetpointStatus")
 
-    @thermostatSetpointStatus.setter
-    def thermostatSetpointStatus(self, thermostatSetpointStatus):
+    def set_thermostatSetpointStatus(self, thermostatSetpointStatus):
         """Set Thermostat."""
 
         self.updateThermostat(thermostatSetpointStatus=thermostatSetpointStatus)
@@ -537,7 +536,7 @@ class Thermostat(lyricDevice):
     def thermostatSetpointHoldUntil(
         self, nextPeriodTime, heatSetpoint=None, coolSetpoint=None
     ):
-        """Set thermostate hold until point."""
+        """Set thermostat hold until point."""
 
         if nextPeriodTime is None:
             raise ValueError("nextPeriodTime is required")
@@ -566,8 +565,7 @@ class Thermostat(lyricDevice):
 
         return self.changeableValues.get("mode")
 
-    @operationMode.setter
-    def operationMode(self, mode):
+    def set_operationMode(self, mode):
         """Set operation mode."""
 
         self.updateThermostat(mode=mode)
@@ -581,8 +579,7 @@ class Thermostat(lyricDevice):
         else:
             return self.changeableValues.get("coolSetpoint")
 
-    @temperatureSetpoint.setter
-    def temperatureSetpoint(self, setpoint):
+    def set_temperatureSetpoint(self, setpoint):
         """Set temperature set point."""
 
         if self.thermostatSetpointStatus in ["NoHold", "HoldUntil"]:
@@ -754,8 +751,7 @@ class Thermostat(lyricDevice):
         ):
             return self.settings.get("fan").get("changeableValues").get("mode")
 
-    @fanMode.setter
-    def fanMode(self, mode):
+    def set_fanMode(self, mode):
         """Set fan mode."""
 
         self.updateFan(mode)

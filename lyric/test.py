@@ -46,7 +46,7 @@ for location in lapi.locations:
         print(device.deviceType)
         print(device.indoorTemperature)
         print(device.temperatureSetpoint)
-        device.temperatureSetpoint = 18
+        device.set_temperatureSetpoint(18)
 
     for thermostat in location.thermostats:
         print(thermostat)
