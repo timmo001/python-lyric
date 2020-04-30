@@ -5,12 +5,10 @@
 import logging
 import os
 import time
-import urllib.parse
 
-import requests
-from requests.auth import HTTPBasicAuth
-from requests.compat import json
-from requests_oauthlib import OAuth2Session
+import aiohttp
+import asyncio
+import urllib.parse
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -926,7 +924,7 @@ class WaterLeakDetector(lyricDevice):
 class Lyric(object):
     """Lyric Class."""
 
-    def __init__(
+    async def __init__(
         self,
         client_id,
         client_secret,
@@ -940,6 +938,7 @@ class Lyric(object):
     ):
         """Intializes and configures the Lyric class."""
 
+        self._session = await self.aiohttp_get_session()
         self._client_id = client_id
         self._client_secret = client_secret
         self._app_name = app_name
@@ -969,18 +968,33 @@ class Lyric(object):
 
         return False
 
-    def _token_saver(self, token):
-        """Token saver."""
+    async def aiohttp_get_session(self) -> aiohttp.ClientSession:
+        """Setup session."""
+        async with aiohttp.ClientSession() as session:
+            return await session
 
-        self._token = token
-        if self._token_cache_file is not None:
-            with os.fdopen(
-                os.open(
-                    self._token_cache_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600
-                ),
-                "w",
-            ) as f:
-                return json.dump(token, f)
+    async def aiohttp_get(
+        self,
+        session: aiohttp.ClientSession,
+        url: str,
+        client_id: str,
+        client_secret: str,
+    ) -> aiohttp.ClientResponse:
+        """Get request."""
+        async with session.get(url, client_id, client_secret) as response:
+            return await response
+
+    async def aiohttp_post(
+        self,
+        session: aiohttp.ClientSession,
+        url: str,
+        client_id: str,
+        client_secret: str,
+        json: dict,
+    ) -> aiohttp.ClientResponse:
+        """Get request."""
+        async with session.get(url, client_id, client_secret, json) as response:
+            return await response
 
     @property
     def token(self):
@@ -988,171 +1002,43 @@ class Lyric(object):
 
         return self._token
 
-    @property
-    def authorized(self):
-        """Return authorized."""
-
-        return self._lyricApi.authorized
-
-    @property
-    def getauthorize_url(self):
-        """Return session."""
-
-        self._lyricApi = OAuth2Session(
-            self._client_id,
-            redirect_uri=self._redirect_uri,
-            auto_refresh_url=REFRESH_URL,
-            token_updater=self._token_saver,
-        )
-
-        authorization_url, state = self._lyricApi.authorization_url(
-            AUTHORIZATION_BASE_URL, app=self._app_name
-        )
-
-        return authorization_url
-
-    def authorization_response(self, authorization_response):
-        """Get authorized response."""
-
-        auth = HTTPBasicAuth(self._client_id, self._client_secret)
-        headers = {"Accept": "application/json"}
-
-        token = self._lyricApi.fetch_token(
-            TOKEN_URL,
-            headers=headers,
-            auth=auth,
-            authorization_response=authorization_response,
-        )
-
-        self._token_saver(token)
-
-    def authorization_code(self, code, state):
-        """Return authorization status."""
-
-        auth = HTTPBasicAuth(self._client_id, self._client_secret)
-        headers = {"Accept": "application/json"}
-
-        token = self._lyricApi.fetch_token(
-            TOKEN_URL, headers=headers, auth=auth, code=code, state=state
-        )
-
-        self._token_saver(token)
-
-    def _lyricAuth(self):
-        """Get lyric authorization."""
-
-        if (
-            self._token_cache_file is not None
-            and self._token is None
-            and os.path.exists(self._token_cache_file)
-        ):
-            with open(self._token_cache_file, "r") as f:
-                self._token = json.load(f)
-
-        if self._token is not None:
-            # force token refresh
-            self._token["expires_at"] = time.time() - 10
-            self._token["expires_in"] = "-30"
-
-            self._lyricApi = OAuth2Session(
-                self._client_id,
-                token=self._token,
-                auto_refresh_url=REFRESH_URL,
-                token_updater=self._token_saver,
-            )
-
-    def _lyricReauth(self):
-        """Lyric reauth."""
-
-        if (
-            self._token_cache_file is not None
-            and self._token is None
-            and os.path.exists(self._token_cache_file)
-        ):
-            with open(self._token_cache_file, "r") as f:
-                self._token = json.load(f)
-
-        if self._token is not None:
-            auth = HTTPBasicAuth(self._client_id, self._client_secret)
-            headers = {"Accept": "application/json"}
-
-            self._lyricApi = OAuth2Session(
-                self._client_id,
-                token=self._token,
-                auto_refresh_url=REFRESH_URL,
-                token_updater=self._token_saver,
-            )
-
-            token = self._lyricApi.refresh_token(
-                REFRESH_URL,
-                refresh_token=self._token.get("refresh_token"),
-                headers=headers,
-                auth=auth,
-            )
-            self._token_saver(token)
-
-    def _get(self, endpoint, **params):
+    async def _get(self, endpoint, **params):
         """Lyric get request method."""
 
         params["apikey"] = self._client_id
         query_string = urllib.parse.urlencode(params)
         url = BASE_URL + endpoint + "?" + query_string
-        try:
-            response = self._lyricApi.get(
-                url, client_id=self._client_id, client_secret=self._client_secret
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.HTTPError as e:
-            _LOGGER.error("HTTP Error Lyric API: %s" % e)
-            if e.response.status_code == 401:
-                self._lyricReauth()
-        except requests.exceptions.RequestException as e:
-            # print("Error Lyric API: %s with data: %s" % (e, data))
-            _LOGGER.error("Error Lyric API: %s" % e)
+        # try:
+        response = await self.aiohttp_get(
+            self._session, url, self._client_id, self._client_secret,
+        )
+        return response.json()
+        # except requests.HTTPError as e:
+        #     _LOGGER.error("HTTP Error Lyric API: %s" % e)
+        #     if e.response.status_code == 401:
+        #         self._lyricReauth()
+        # except requests.exceptions.RequestException as e:
+        #     # print("Error Lyric API: %s with data: %s" % (e, data))
+        #     _LOGGER.error("Error Lyric API: %s" % e)
 
-    def _post(self, endpoint, data, **params):
+    async def _post(self, endpoint, json, **params):
         """Lyric post request method."""
 
         params["apikey"] = self._client_id
         query_string = urllib.parse.urlencode(params)
         url = BASE_URL + endpoint + "?" + query_string
-        try:
-            response = self._lyricApi.post(
-                url,
-                json=data,
-                client_id=self._client_id,
-                client_secret=self._client_secret,
-            )
-            response.raise_for_status()
-            return response.status_code
-        except requests.HTTPError as e:
-            _LOGGER.error("HTTP Error Lyric API: %s" % e)
-            if e.response.status_code == 401:
-                self._lyricReauth()
-        except requests.exceptions.RequestException as e:
-            # print("Error Lyric API: %s with data: %s" % (e, data))
-            _LOGGER.error("Error Lyric API: %s with data: %s" % (e, data))
-
-    def _checkCache(self, cache_key):
-        """Check cache status."""
-
-        if cache_key in self._cache:
-            cache = self._cache[cache_key]
-        else:
-            cache = (None, 0)
-
-        return cache
-
-    def _bust_cache_all(self):
-        """Destroy Cache."""
-
-        self._cache = {}
-
-    def _bust_cache(self, cache_key):
-        """Destroy specific cache entry."""
-
-        self._cache[cache_key] = (None, 0)
+        # try:
+        response = await self.aiohttp_post(
+            self._session, url, self._client_id, self._client_secret, json,
+        )
+        return response.status_code
+        # except requests.HTTPError as e:
+        #     _LOGGER.error("HTTP Error Lyric API: %s" % e)
+        #     if e.response.status_code == 401:
+        #         self._lyricReauth()
+        # except requests.exceptions.RequestException as e:
+        #     # print("Error Lyric API: %s with data: %s" % (e, data))
+        #     _LOGGER.error("Error Lyric API: %s with data: %s" % (e, data))
 
     def _location(self, locationId):
         """Return location."""
@@ -1244,7 +1130,7 @@ class Lyric(object):
 
     def get_locations(self):
         """Return locations."""
-        
+
         return [
             Location(location["locationID"], self, self._local_time)
             for location in self._get_locations()
