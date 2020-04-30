@@ -925,38 +925,15 @@ class Lyric(object):
     """Lyric Class."""
 
     async def __init__(
-        self,
-        client_id,
-        client_secret,
-        cache_ttl=270,
-        user_agent="python-lyric/0.1",
-        token=None,
-        token_cache_file=None,
-        local_time=False,
-        app_name=None,
-        redirect_uri=None,
+        self, client_id, client_secret, token, local_time=False,
     ):
         """Intializes and configures the Lyric class."""
 
         self._session = await self.aiohttp_get_session()
         self._client_id = client_id
         self._client_secret = client_secret
-        self._app_name = app_name
-        self._redirect_uri = redirect_uri
         self._token = token
-        self._token_cache_file = token_cache_file
-        self._cache_ttl = cache_ttl
-        self._cache = {}
         self._local_time = local_time
-        self._user_agent = user_agent
-
-        if token is None and token_cache_file is None and redirect_uri is None:
-            print(
-                "You need to supply a token or a cached token file,"
-                "or define a redirect uri"
-            )
-        else:
-            self._lyricAuth()
 
     def __enter__(self):
         """Return Self."""
