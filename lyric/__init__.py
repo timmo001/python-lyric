@@ -1243,8 +1243,7 @@ class Lyric(object):
 
         return value
 
-    @property
-    def locations(self):
+    def get_locations(self):
         """Return locations."""
 
         if self._locations:
