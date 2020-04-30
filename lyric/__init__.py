@@ -40,7 +40,6 @@ class lyricDevice(object):
 
         params["locationId"] = self._location.locationId
         print(self._lyric_api._post(endpoint, data, **params))
-        self._lyric_api._bust_cache_all()
 
     @property
     def id(self):
@@ -1027,22 +1026,7 @@ class Lyric(object):
     def _get_locations(self):
         """Return locations."""
 
-        cache_key = "locations"
-        value, last_update = self._checkCache(cache_key)
-        now = time.time()
-
-        if not value or now - last_update > self._cache_ttl:
-            new_value = self._get("locations")
-            if new_value:
-                self._cache[cache_key] = (new_value, now)
-                return new_value
-            else:
-                self._cache[cache_key] = (
-                    value,
-                    last_update + 5,
-                )  # try again in 5 seconds
-
-        return value
+        return self._get("locations")
 
     def _user(self, locationId, userId):
         """Return user."""
@@ -1067,23 +1051,7 @@ class Lyric(object):
     def _devices(self, locationId, forceGet=False):
         """Return devices."""
 
-        if forceGet:
-            cache_key = "devices-%s" % locationId
-            value, last_update = self._checkCache(cache_key)
-            now = time.time()
-
-            if not value or now - last_update > self._cache_ttl:
-                new_value = self._get("devices", locationId=locationId)
-                if new_value:
-                    self._cache[cache_key] = (new_value, now)
-                    return new_value
-        else:
-            if self._location(locationId):
-                return self._location(locationId).get("devices")
-            else:
-                return None
-
-        return value
+        return self._location(locationId).get("devices")
 
     def _device_type(self, locationId, deviceType, deviceId):
         """Return devices of a specific type."""
@@ -1095,15 +1063,7 @@ class Lyric(object):
     def _devices_type(self, deviceType, locationId):
         """Return device type."""
 
-        cache_key = "devices_type-%s_%s" % (locationId, deviceType)
-        value, last_update = self._checkCache(cache_key)
-        now = time.time()
-
-        if not value or now - last_update > self._cache_ttl:
-            value = self._get("devices/" + deviceType, locationId=locationId)
-            self._cache[cache_key] = (value, now)
-
-        return value
+        return self._get("devices/" + deviceType, locationId=locationId)
 
     def get_locations(self):
         """Return locations."""
