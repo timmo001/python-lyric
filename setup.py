@@ -6,7 +6,7 @@ import io
 from setuptools import setup
 
 
-version = '1.1.9'
+version = '1.1.10'
 
 
 setup(name='python-lyric',
