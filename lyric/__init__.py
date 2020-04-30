@@ -1016,17 +1016,17 @@ class Lyric(object):
         #     # print("Error Lyric API: %s with data: %s" % (e, data))
         #     _LOGGER.error("Error Lyric API: %s with data: %s" % (e, data))
 
-    def _location(self, locationId):
+    async def _location(self, locationId):
         """Return location."""
 
-        for location in self._get_locations():
+        for location in await self._get_locations():
             if location.get("locationID") == locationId:
                 return location
 
-    def _get_locations(self):
+    async def _get_locations(self):
         """Return locations."""
 
-        return self._get("locations")
+        return await self._get("locations")
 
     def _user(self, locationId, userId):
         """Return user."""
@@ -1053,22 +1053,22 @@ class Lyric(object):
 
         return self._location(locationId).get("devices")
 
-    def _device_type(self, locationId, deviceType, deviceId):
+    async def _device_type(self, locationId, deviceType, deviceId):
         """Return devices of a specific type."""
 
-        for device in self._devices_type(deviceType, locationId):
+        for device in await self._devices_type(deviceType, locationId):
             if device.get("deviceID") == deviceId:
                 return device
 
-    def _devices_type(self, deviceType, locationId):
+    async def _devices_type(self, deviceType, locationId):
         """Return device type."""
 
-        return self._get("devices/" + deviceType, locationId=locationId)
+        return await self._get("devices/" + deviceType, locationId=locationId)
 
-    def get_locations(self):
+    async def get_locations(self):
         """Return locations."""
 
         return [
             Location(location["locationID"], self, self._local_time)
-            for location in self._get_locations()
+            for location in await self._get_locations()
         ]
