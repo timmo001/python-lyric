@@ -1164,22 +1164,7 @@ class Lyric(object):
     def _get_locations(self):
         """Return locations."""
 
-        cache_key = "locations"
-        value, last_update = self._checkCache(cache_key)
-        now = time.time()
-
-        if not value or now - last_update > self._cache_ttl:
-            new_value = self._get("locations")
-            if new_value:
-                self._cache[cache_key] = (new_value, now)
-                return new_value
-            else:
-                self._cache[cache_key] = (
-                    value,
-                    last_update + 5,
-                )  # try again in 5 seconds
-
-        return value
+        return self._get("locations")
 
     def _user(self, locationId, userId):
         """Return user."""
@@ -1244,6 +1229,7 @@ class Lyric(object):
 
     def get_locations(self):
         """Return locations."""
+
         return [
             Location(location["locationID"], self, self._local_time)
             for location in self._get_locations()
