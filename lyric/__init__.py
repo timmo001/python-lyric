@@ -1157,12 +1157,11 @@ class Lyric(object):
     def _location(self, locationId):
         """Return location."""
 
-        for location in self._locations:
+        for location in self.get_locations():
             if location.get("locationID") == locationId:
                 return location
 
-    @property
-    def _locations(self):
+    def get_locations(self):
         """Return locations."""
 
         cache_key = "locations"
@@ -1246,10 +1245,10 @@ class Lyric(object):
     def get_locations(self):
         """Return locations."""
 
-        if self._locations:
+        if self.get_locations():
             return [
                 Location(location["locationID"], self, self._local_time)
-                for location in self._locations
+                for location in self.get_locations()
             ]
         else:
             return None
