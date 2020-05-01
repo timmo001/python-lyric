@@ -15,7 +15,6 @@ _LOGGER = logging.getLogger(__name__)
 BASE_URL = "https://api.honeywell.com/v2/"
 AUTHORIZATION_BASE_URL = "https://api.honeywell.com/oauth2/authorize"
 TOKEN_URL = "https://api.honeywell.com/oauth2/token"
-REFRESH_URL = TOKEN_URL
 
 
 class Lyric(object):
@@ -32,6 +31,9 @@ class Lyric(object):
         self._token = token
         self._local_time = local_time
 
+        async with ClientSession() as session:
+            self._auth = Auth(session, TOKEN_URL, token)
+
     def __enter__(self):
         """Return Self."""
 
@@ -41,30 +43,6 @@ class Lyric(object):
         """Return exit."""
 
         return False
-
-    async def aiohttp_get_session(self) -> ClientSession:
-        """Setup session."""
-        async with ClientSession() as session:
-            return await session
-
-    async def aiohttp_get(
-        self, session: ClientSession, url: str, client_id: str, client_secret: str,
-    ) -> ClientResponse:
-        """Get request."""
-        async with session.get(url, client_id, client_secret) as response:
-            return await response
-
-    async def aiohttp_post(
-        self,
-        session: ClientSession,
-        url: str,
-        client_id: str,
-        client_secret: str,
-        json: dict,
-    ) -> ClientResponse:
-        """Get request."""
-        async with session.get(url, client_id, client_secret, json) as response:
-            return await response
 
     @property
     def token(self):
@@ -79,8 +57,8 @@ class Lyric(object):
         query_string = urllib.parse.urlencode(params)
         url = BASE_URL + endpoint + "?" + query_string
         # try:
-        response = await self.aiohttp_get(
-            self._session, url, self._client_id, self._client_secret,
+        response = await self._auth.request(
+            "GET", url, client_id=self._client_id, client_secret=self._client_secret,
         )
         return response.json()
         # except requests.HTTPError as e:
@@ -99,7 +77,7 @@ class Lyric(object):
         url = BASE_URL + endpoint + "?" + query_string
         # try:
         response = await self.aiohttp_post(
-            self._session, url, self._client_id, self._client_secret, json,
+            "POST", url, self._client_id, self._client_secret, json=json,
         )
         return response.status_code
         # except requests.HTTPError as e:
