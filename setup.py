@@ -6,7 +6,7 @@ import io
 from setuptools import setup
 
 
-version = "1.1.17"
+version = "2.0.0"
 
 
 setup(
