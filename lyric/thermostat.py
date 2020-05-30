@@ -1,4 +1,5 @@
 """Thermostat"""
+from lyric import lyricDevice
 
 
 class Thermostat(lyricDevice):
