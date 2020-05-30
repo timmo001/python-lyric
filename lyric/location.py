@@ -1,7 +1,9 @@
 """Location"""
 
-from . import Device, Thermostat, User, WaterLeakDetector
-
+from lyric.device import Device
+from lyric.thermostat import Thermostat
+from lyric.user import User
+from lyric.waterleakdetector import WaterLeakDetector
 
 class Location(object):
     """Store Location Information."""

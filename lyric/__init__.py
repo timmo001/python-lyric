@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from aiohttp import ClientSession, ClientResponse
 import urllib.parse
 
-from . import Location
+from lyric.location import Location
 
 _LOGGER = logging.getLogger(__name__)
 
