@@ -1,4 +1,5 @@
 """Device"""
+from lyric import lyricDevice
 
 
 class Device(lyricDevice):

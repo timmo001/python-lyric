@@ -1,4 +1,5 @@
 """Water Leak Detector"""
+from lyric import lyricDevice
 
 
 class WaterLeakDetector(lyricDevice):
