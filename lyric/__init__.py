@@ -20,6 +20,14 @@ class Lyric(LyricBase):
         self._devices: List[LyricDevice] = None
         self._locations: List[LyricLocation] = None
 
+    @property
+    def devices(self) -> List[LyricDevice]:
+        return self._devices
+
+    @property
+    def locations(self) -> List[LyricLocation]:
+        return self._locations
+
     async def get_devices(self) -> None:
         """Get Devices."""
         response: ClientResponse = await self.client.get(
