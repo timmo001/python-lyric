@@ -20,14 +20,13 @@ class Lyric(LyricBase):
         self._devices: List[LyricDevice] = None
         self._locations: List[LyricLocation] = None
 
-    async def get_devices(self, client_id: str, code: str, redirect_url: str) -> None:
-        """Get Locations."""
+    async def get_devices(self) -> None:
+        """Get Devices."""
         response: ClientResponse = await self.client.get(
             f"{BASE_URL}/devices",
             headers={
                 "Authorization": f"Basic {self.client.token_manager.access_token}",
             },
-            data=f"grant_type=authorization_code&code={code}&redirect_uri={redirect_url}",
         )
         if response.status != 200:
             if response.status == 401 or response.status == 403:
@@ -40,14 +39,13 @@ class Lyric(LyricBase):
 
         self._devices = json
 
-    async def get_locations(self, client_id: str, code: str, redirect_url: str) -> None:
+    async def get_locations(self) -> None:
         """Get Locations."""
         response: ClientResponse = await self.client.get(
             f"{BASE_URL}/locations",
             headers={
                 "Authorization": f"Basic {self.access_token}",
             },
-            data=f"grant_type=authorization_code&code={code}&redirect_uri={redirect_url}",
         )
         if response.status != 200:
             if response.status == 401 or response.status == 403:
