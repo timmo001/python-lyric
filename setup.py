@@ -9,7 +9,7 @@ version = "2.0.0"
 setup(
     name="python-lyric",
     version=version,
-    description="Python API for talking to the " "Honeywell Lyric™ Thermostat",
+    description="Python API for talking to the Honeywell Lyric™ Thermostat",
     long_description=io.open("README.rst", encoding="UTF-8").read(),
     keywords="honeywell lyric thermostat",
     author="Bram Kragten",
