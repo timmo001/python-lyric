@@ -1,7 +1,7 @@
 """Lyric: Thermostat"""
 
 
-class Thermostat(lyricDevice):
+class LyricThermostat(object):
     """Thermostat Class."""
 
     @property

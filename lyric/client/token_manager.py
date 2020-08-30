@@ -13,7 +13,7 @@ class LyricTokenManager(LyricBase):
 
     def __init__(self, client: "LyricClient") -> None:
         """Initialize the token manager class."""
-        self.client = client
+        self._client = client
         self._access_token = None
         self._refresh_token = None
         self._expires_in = datetime.now()
@@ -42,7 +42,7 @@ class LyricTokenManager(LyricBase):
         self, client_id: str, code: str, redirect_url: str
     ) -> None:
         """Update the current token."""
-        auth_response: ClientResponse = await self.client.post(
+        auth_response: ClientResponse = await self._client.post(
             TOKEN_URL,
             headers={
                 "Authorization": f"Basic {self.access_token}",

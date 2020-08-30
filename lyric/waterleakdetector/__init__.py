@@ -1,7 +1,7 @@
 """Lyric: WaterLeakDetector"""
 
 
-class WaterLeakDetector(lyricDevice):
+class LyricWaterLeakDetector(object):
     """Water Leak Detector Class."""
 
     @property

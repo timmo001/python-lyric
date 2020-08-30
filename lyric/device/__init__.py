@@ -1,7 +1,7 @@
 """Lyric: Device"""
 
 
-class Device(lyricDevice):
+class LyricDevice(object):
     """Device class."""
 
     @property

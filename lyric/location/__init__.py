@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 
 from ..exceptions import LyricException, LyricAuthenticationException
 from ..const import AUTH_URL, BASE_URL, TOKEN_URL
-from ..device import Device
-from ..thermostat import Thermostat
-from ..waterleakdetector import WaterLeakDetector
-from ..user import User
+from ..device import LyricDevice
+from ..thermostat import LyricThermostat
+from ..waterleakdetector import LyricWaterLeakDetector
+from ..user import LyricUser
 
 
-class Location(object):
+class LyricLocation(object):
     """Store Location Information."""
 
     def __init__(self, client: "LyricClient", location_id: int):
@@ -140,7 +140,7 @@ class Location(object):
     def users(self):
         """Return Users."""
         return [
-            User(user.get("userID"), self, self._lyric_api, self._local_time)
+            LyricUser(user.get("userID"), self, self._lyric_api, self._local_time)
             for user in self._users
         ]
 
@@ -151,19 +151,21 @@ class Location(object):
         for device in self._devices:
             if device["deviceType"] == "Thermostat":
                 devices.append(
-                    Thermostat(
+                    LyricThermostat(
                         device["deviceID"], self, self._lyric_api, self._local_time
                     )
                 )
             elif device["deviceType"] == "Water Leak Detector":
                 devices.append(
-                    WaterLeakDetector(
+                    LyricWaterLeakDetector(
                         device["deviceID"], self, self._lyric_api, self._local_time
                     )
                 )
             else:
                 devices.append(
-                    Device(device["deviceID"], self, self._lyric_api, self._local_time)
+                    LyricDevice(
+                        device["deviceID"], self, self._lyric_api, self._local_time
+                    )
                 )
         return devices
 
@@ -174,7 +176,7 @@ class Location(object):
         for device in self._devices:
             if device["deviceType"] == "Thermostat":
                 thermostats.append(
-                    Thermostat(
+                    LyricThermostat(
                         device["deviceID"], self, self._lyric_api, self._local_time
                     )
                 )
@@ -187,7 +189,7 @@ class Location(object):
         for device in self._devices:
             if device["deviceType"] == "Water Leak Detector":
                 water_leak_detectors.append(
-                    WaterLeakDetector(
+                    LyricWaterLeakDetector(
                         device["deviceID"], self, self._lyric_api, self._local_time
                     )
                 )

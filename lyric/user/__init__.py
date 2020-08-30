@@ -1,12 +1,12 @@
 """Lyric: User"""
 
-from ..location import Location
 
-
-class User(object):
+class LyricUser(object):
     """Class definition for User object."""
 
-    def __init__(self, client: "LyricClient", location: Location, user: User):
+    def __init__(
+        self, client: "LyricClient", location: "LyricLocation", user: "LyricUser"
+    ):
         """Configure User object."""
         self._client = client
         self._location = location
