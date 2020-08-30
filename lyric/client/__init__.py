@@ -7,7 +7,7 @@ from asyncio import CancelledError, TimeoutError, get_event_loop
 from aiohttp import ClientError, ClientSession, ClientResponse
 
 from ..base import LyricBase
-from ..common.exceptions import LyricException, LyricAuthenticationException
+from ..exceptions import LyricException, LyricAuthenticationException
 from .token_manager import LyricTokenManager
 
 

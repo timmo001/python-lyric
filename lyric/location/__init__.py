@@ -1,8 +1,8 @@
 """Lyric: Location"""
 from datetime import datetime, timedelta
 
-from ..common.exceptions import LyricException, LyricAuthenticationException
-from ..common.const import AUTH_URL, BASE_URL, TOKEN_URL
+from ..exceptions import LyricException, LyricAuthenticationException
+from ..const import AUTH_URL, BASE_URL, TOKEN_URL
 from ..device import Device
 from ..thermostat import Thermostat
 from ..waterleakdetector import WaterLeakDetector

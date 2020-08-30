@@ -4,8 +4,8 @@ from asyncio import CancelledError, TimeoutError, get_event_loop
 from datetime import datetime, timedelta
 
 from ..base import LyricBase
-from ..common.exceptions import LyricException, LyricAuthenticationException
-from ..common.const import AUTH_URL, BASE_URL, TOKEN_URL
+from ..exceptions import LyricException, LyricAuthenticationException
+from ..const import AUTH_URL, BASE_URL, TOKEN_URL
 
 
 class LyricTokenManager(LyricBase):

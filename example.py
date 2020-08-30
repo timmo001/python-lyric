@@ -4,7 +4,7 @@ import asyncio
 from aiohttp import ClientSession
 
 from lyric.client import LyricClient
-from lyric.common.exceptions import LyricException, LyricAuthenticationException
+from lyric.exceptions import LyricException, LyricAuthenticationException
 from lyric.client.token_manager import LyricTokenManager
 
 CLIENT_ID = "abc123"
