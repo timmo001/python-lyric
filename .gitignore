@@ -42,4 +42,10 @@ MANIFEST
 # PyCharm
 .idea/*
 
+# venv
+venv/
+
+# vscode
+.vscode/
+
 lyric/test-bram.py
