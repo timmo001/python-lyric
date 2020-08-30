@@ -49,3 +49,4 @@ venv/
 .vscode/
 
 lyric/test-bram.py
+example-const.py
