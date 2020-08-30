@@ -30,10 +30,10 @@ class Lyric(LyricBase):
 
     async def get_devices(self) -> None:
         """Get Devices."""
-        response: ClientResponse = await self.client.get(
+        response: ClientResponse = await self._client.get(
             f"{BASE_URL}/devices",
             headers={
-                "Authorization": f"Basic {self.client.token_manager.access_token}",
+                "Authorization": f"Basic {self._client.token_manager.access_token}",
             },
         )
         if response.status != 200:
@@ -49,10 +49,10 @@ class Lyric(LyricBase):
 
     async def get_locations(self) -> None:
         """Get Locations."""
-        response: ClientResponse = await self.client.get(
+        response: ClientResponse = await self._client.get(
             f"{BASE_URL}/locations",
             headers={
-                "Authorization": f"Basic {self.access_token}",
+                "Authorization": f"Basic {self._client.token_manager.access_token}",
             },
         )
         if response.status != 200:
