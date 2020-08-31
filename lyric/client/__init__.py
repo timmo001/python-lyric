@@ -51,12 +51,12 @@ class LyricClient(LyricBase):
                 headers=headers,
             )
         if response.status != 200:
-            if response.status == 401 or response.status == 403:
+            if response.status == 401:
                 raise LyricAuthenticationException(
                     {
                         "request": {"method": method, "url": url, "headers": headers},
                         "status": response.status,
-                        "text": await response.text(),
+                        "text": await response.json(),
                     }
                 )
             else:
