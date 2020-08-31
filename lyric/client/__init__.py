@@ -13,9 +13,10 @@ from ..exceptions import LyricException, LyricAuthenticationException
 class LyricClient(LyricBase):
     """Client to handle API calls."""
 
-    def __init__(self, session: ClientSession) -> None:
+    def __init__(self, session: ClientSession, access_token: str) -> None:
         """Initialize the client."""
-        self.session = session
+        self._session = session
+        self._access_token = access_token
 
     @abstractmethod
     async def async_get_access_token(self) -> str:
@@ -27,7 +28,7 @@ class LyricClient(LyricBase):
             response = await self.request(
                 "GET",
                 url,
-                headers=f"Authorization: Basic {self.token_manager.access_token}",
+                headers=f"Authorization: Basic {self._access_token}",
                 **kwargs,
             )
         if response.status != 200:
@@ -63,7 +64,7 @@ class LyricClient(LyricBase):
         headers["authorization"] = f"Bearer {access_token}"
 
         async with async_timeout.timeout(20, loop=get_event_loop()):
-            return await self.session.request(
+            return await self._session.request(
                 method,
                 url,
                 **kwargs,
