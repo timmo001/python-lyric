@@ -56,7 +56,7 @@ class LyricClient(LyricBase):
                     {
                         "request": {"method": method, "url": url, "headers": headers},
                         "status": response.status,
-                        "text": response.text(),
+                        "text": await response.text(),
                     }
                 )
             else:
@@ -64,7 +64,7 @@ class LyricClient(LyricBase):
                     {
                         "request": {"method": method, "url": url, "headers": headers},
                         "status": response.status,
-                        "text": response.text(),
+                        "text": await response.text(),
                     }
                 )
         return response
