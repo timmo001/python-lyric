@@ -21,32 +21,13 @@ class LyricClient(LyricBase):
     async def async_get_access_token(self) -> str:
         """Return a valid access token."""
 
-    async def get(self, token: str, url: str, **kwargs) -> ClientResponse:
+    async def get(self, url: str, **kwargs) -> ClientResponse:
         """Make a GET request."""
-        async with async_timeout.timeout(20, loop=get_event_loop()):
-            response = await self.request(
-                "GET",
-                url,
-                headers=f"Authorization: Basic {token}",
-                **kwargs,
-            )
-        if response.status != 200:
-            if response.status == 401 or response.status == 403:
-                raise LyricAuthenticationException(response.status)
-            else:
-                raise LyricException(response.status)
-        return response
+        return await self.request("GET", url, **kwargs)
 
     async def post(self, url: str, **kwargs) -> ClientResponse:
         """Make a POST request."""
-        async with async_timeout.timeout(20, loop=get_event_loop()):
-            response = await self.request("POST", url, **kwargs)
-        if response.status != 200:
-            if response.status == 401 or response.status == 403:
-                raise LyricAuthenticationException(response.status)
-            else:
-                raise LyricException(response.status)
-        return response
+        return await self.request("POST", url, **kwargs)
 
     async def request(
         self, method: str in ["GET", "POST"], url: str, **kwargs
@@ -63,9 +44,15 @@ class LyricClient(LyricBase):
         headers["authorization"] = f"Bearer {access_token}"
 
         async with async_timeout.timeout(20, loop=get_event_loop()):
-            return await self._session.request(
+            response: ClientResponse = await self._session.request(
                 method,
                 url,
                 **kwargs,
                 headers=headers,
             )
+        if response.status != 200:
+            if response.status == 401 or response.status == 403:
+                raise LyricAuthenticationException(response.status)
+            else:
+                raise LyricException(response.status)
+        return response
