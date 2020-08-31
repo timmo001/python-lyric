@@ -23,7 +23,7 @@ class LyricLocation(object):
         return self._location_id
 
     @property
-    def locationId(self):
+    def locationId(self) -> int:
         """Return Location ID."""
         return self._location_id
 
@@ -41,11 +41,6 @@ class LyricLocation(object):
     def name(self):
         """Return name."""
         return self.location.get("name")
-
-    @property
-    def _repr_name(self):
-        """Return name."""
-        return self.name
 
     @property
     def streetAddress(self):
