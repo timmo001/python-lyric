@@ -8,7 +8,6 @@ from aiohttp import ClientError, ClientSession, ClientResponse
 
 from ..base import LyricBase
 from ..exceptions import LyricException, LyricAuthenticationException
-from .token_manager import LyricTokenManager
 
 
 class LyricClient(LyricBase):
@@ -17,7 +16,6 @@ class LyricClient(LyricBase):
     def __init__(self, session: ClientSession) -> None:
         """Initialize the client."""
         self.session = session
-        self.token_manager = LyricTokenManager(self.session)
 
     @abstractmethod
     async def async_get_access_token(self) -> str:

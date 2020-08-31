@@ -5,7 +5,6 @@ from aiohttp import ClientSession
 
 from lyric.client import LyricClient
 from lyric.exceptions import LyricException, LyricAuthenticationException
-from lyric.client.token_manager import LyricTokenManager
 
 CLIENT_ID = "abc123"
 CODE = "123456"
@@ -17,10 +16,6 @@ async def example():
     async with ClientSession() as session:
         try:
             client = LyricClient(session)
-            await client.token_manager.async_update_token(CLIENT_ID, CODE, REDIRECT_URL)
-            print(client.token_manager.token)
-            print(client.token_manager.token_expires)
-            print(client.token_manager.token_valid)
         except LyricAuthenticationException as err:
             print(f"Lyric authentication error: {err}")
         except LyricException as err:
