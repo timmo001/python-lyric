@@ -29,7 +29,7 @@ class LyricClient(LyricBase):
             response = await self.request(
                 "GET",
                 url,
-                headers=f"Authorization: Basic {self._client.token_manager.access_token}",
+                headers=f"Authorization: Basic {self.token_manager.access_token}",
                 **kwargs,
             )
         if response.status != 200:
