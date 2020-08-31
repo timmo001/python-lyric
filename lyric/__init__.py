@@ -28,20 +28,18 @@ class Lyric(LyricBase):
     def locations(self) -> List[LyricLocation]:
         return self._locations
 
-    async def get_devices(self, token: str) -> None:
+    async def get_devices(self) -> None:
         """Get Devices."""
-        response: ClientResponse = await self._client.get(token, f"{BASE_URL}/devices")
+        response: ClientResponse = await self._client.get(f"{BASE_URL}/devices")
         json = await response.json()
 
         self.logger.debug(json)
 
         self._devices = json
 
-    async def get_locations(self, token: str) -> None:
+    async def get_locations(self) -> None:
         """Get Locations."""
-        response: ClientResponse = await self._client.get(
-            token, f"{BASE_URL}/locations"
-        )
+        response: ClientResponse = await self._client.get(f"{BASE_URL}/locations")
         json = await response.json()
 
         self.logger.debug(json)
