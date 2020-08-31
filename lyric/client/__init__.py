@@ -50,7 +50,6 @@ class LyricClient(LyricBase):
                 **kwargs,
                 headers=headers,
             )
-        response.raise_for_status()
         if response.status != 200:
             if response.status == 401 or response.status == 403:
                 raise LyricAuthenticationException(
