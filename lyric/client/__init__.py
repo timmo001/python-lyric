@@ -21,13 +21,13 @@ class LyricClient(LyricBase):
     async def async_get_access_token(self) -> str:
         """Return a valid access token."""
 
-    async def get(self, url: str, **kwargs) -> ClientResponse:
+    async def get(self, token: str, url: str, **kwargs) -> ClientResponse:
         """Make a GET request."""
         async with async_timeout.timeout(20, loop=get_event_loop()):
             response = await self.request(
                 "GET",
                 url,
-                headers=f"Authorization: Basic {self._access_token}",
+                headers=f"Authorization: Basic {token}",
                 **kwargs,
             )
         if response.status != 200:
