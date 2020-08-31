@@ -13,10 +13,9 @@ from ..exceptions import LyricException, LyricAuthenticationException
 class LyricClient(LyricBase):
     """Client to handle API calls."""
 
-    def __init__(self, session: ClientSession, access_token: str) -> None:
+    def __init__(self, session: ClientSession) -> None:
         """Initialize the client."""
         self._session = session
-        self._access_token = access_token
 
     @abstractmethod
     async def async_get_access_token(self) -> str:
