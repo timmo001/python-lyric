@@ -30,17 +30,7 @@ class Lyric(LyricBase):
 
     async def get_devices(self) -> None:
         """Get Devices."""
-        response: ClientResponse = await self._client.get(
-            f"{BASE_URL}/devices",
-            headers={
-                "Authorization": f"Basic {self._client.token_manager.access_token}",
-            },
-        )
-        if response.status != 200:
-            if response.status == 401 or response.status == 403:
-                raise LyricAuthenticationException(response.status)
-            else:
-                raise LyricException(response.status)
+        response: ClientResponse = await self._client.get(f"{BASE_URL}/devices")
         json = await response.json()
 
         self.logger.debug(json)
@@ -49,17 +39,7 @@ class Lyric(LyricBase):
 
     async def get_locations(self) -> None:
         """Get Locations."""
-        response: ClientResponse = await self._client.get(
-            f"{BASE_URL}/locations",
-            headers={
-                "Authorization": f"Basic {self._client.token_manager.access_token}",
-            },
-        )
-        if response.status != 200:
-            if response.status == 401 or response.status == 403:
-                raise LyricAuthenticationException(response.status)
-            else:
-                raise LyricException(response.status)
+        response: ClientResponse = await self._client.get(f"{BASE_URL}/locations")
         json = await response.json()
 
         self.logger.debug(json)
